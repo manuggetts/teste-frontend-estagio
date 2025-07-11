@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
+import zxcvbn from "zxcvbn";
 
 import { Input, SubmitButton, Loader } from "@/components";
 import { registerUser } from "@/lib/auth";
@@ -122,6 +123,25 @@ const SignupForm = () => {
     }
   };
 
+  const passwordStrength = zxcvbn(formData.password);
+  const score = passwordStrength.score; // de 0 a 4
+  const feedback = passwordStrength.feedback.warning || "Senha segura!";
+
+  const colors = [
+    "bg-red-500",
+    "bg-orange-400",
+    "bg-yellow-400",
+    "bg-green-400",
+    "bg-green-600",
+  ];
+  const widths = [
+    "w-1/5",
+    "w-2/5",
+    "w-3/5",
+    "w-4/5",
+    "w-full",
+  ];
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="flex flex-col w-[460px] p-8 bg-white rounded-xl shadow-lg">
@@ -189,6 +209,13 @@ const SignupForm = () => {
             }
             onClickIcon={() => setShowPassword((prev) => !prev)}
           />
+
+          <div className="mt-2 h-2 bg-gray-200 rounded">
+          <div
+            className={`${colors[score]} ${widths[score]} h-2 rounded transition-all duration-500`}
+          ></div>
+          </div>
+          <p className="text-sm text-gray-600 mt-1">{feedback}</p>
 
           <label
             htmlFor="confirmPassword"
