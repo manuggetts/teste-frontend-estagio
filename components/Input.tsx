@@ -4,6 +4,7 @@ import { Eye, EyeOff } from "lucide-react";
 
 interface InputProps {
   id?: string;
+  name?: string;
   type?: string;
   placeholder?: string;
   value: string;
@@ -17,6 +18,7 @@ interface InputProps {
 
 const Input: React.FC<InputProps> = ({
   id,
+  name,
   type = "text",
   placeholder,
   value,
@@ -42,6 +44,7 @@ const Input: React.FC<InputProps> = ({
     <div className="relative">
       <input
         id={id}
+        name={name}
         type={type}
         placeholder={placeholder}
         value={value}
