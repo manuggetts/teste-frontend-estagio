@@ -54,13 +54,19 @@ const SignupForm = () => {
   const validateEmail = (email: string) =>
     /\S+@\S+\.\S+/.test(email);
 
+  useEffect(() => {
+    if (formData.email) {
+      const isValid = validateEmail(formData.email);
+      setErrorEmail(!isValid);
+    }
+  }, [formData.email]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
     setFormData((prev) => ({ ...prev, [name]: value }));
 
     if (name === "username") setErrorUsername(false);
-    if (name === "email") setErrorEmail(false);
     if (name === "password") setErrorPassword(false);
     if (name === "confirmPassword") setErrorConfirmPassword(false);
   };
@@ -144,17 +150,22 @@ const SignupForm = () => {
           <label htmlFor="email" className="block text-base font-medium mt-6 mb-2">
             Email
           </label>
-          <Input
-            id="email"
-            name="email"
-            type="email"
-            placeholder="Digite seu email"
-            value={formData.email}
-            onChange={handleChange}
-            state={errorEmail ? "error" : "default"}
-            disabled={loading}
-            className={shakeEmail ? "animate-shake" : ""}
-          />
+          <>
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="Digite seu email"
+              value={formData.email}
+              onChange={handleChange}
+              state={errorEmail ? "error" : "default"}
+              disabled={loading}
+              className={shakeEmail ? "animate-shake" : ""}
+            />
+            {formData.email && errorEmail && (
+              <p className="text-sm text-red-500 mt-1">Email inválido</p>
+            )}
+          </>
 
           <label htmlFor="password" className="block text-base font-medium mt-6 mb-2">
             Senha
