@@ -1,13 +1,16 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff, X } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 
 import { Input, SubmitButton, Loader } from "@/components";
 import { registerUser } from "@/lib/auth";
-import { useToast } from "@/components/ToastExample";
+import {
+  ToastProvider,
+  useToast,
+} from "@/components/ToastExample";
 
-const Signup = () => {
+const SignupForm = () => {
   const { push } = useRouter();
   const { addToast } = useToast();
 
@@ -124,10 +127,7 @@ const Signup = () => {
         </h1>
 
         <form onSubmit={handleSubmit} className="flex flex-col mt-8 relative">
-          <label
-            htmlFor="username"
-            className="block text-base font-medium mb-2"
-          >
+          <label htmlFor="username" className="block text-base font-medium mb-2">
             Usuário
           </label>
           <Input
@@ -141,10 +141,7 @@ const Signup = () => {
             className={shakeUsername ? "animate-shake" : ""}
           />
 
-          <label
-            htmlFor="email"
-            className="block text-base font-medium mt-6 mb-2"
-          >
+          <label htmlFor="email" className="block text-base font-medium mt-6 mb-2">
             Email
           </label>
           <Input
@@ -159,10 +156,7 @@ const Signup = () => {
             className={shakeEmail ? "animate-shake" : ""}
           />
 
-          <label
-            htmlFor="password"
-            className="block text-base font-medium mt-6 mb-2"
-          >
+          <label htmlFor="password" className="block text-base font-medium mt-6 mb-2">
             Senha
           </label>
           <Input
@@ -227,5 +221,11 @@ const Signup = () => {
     </div>
   );
 };
+
+const Signup = () => (
+  <ToastProvider>
+    <SignupForm />
+  </ToastProvider>
+);
 
 export default Signup;
