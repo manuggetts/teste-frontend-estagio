@@ -1,4 +1,5 @@
 "use client";
+
 import { Suspense, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff, X } from "lucide-react";
@@ -8,13 +9,14 @@ import { Input, SubmitButton, Loader } from "@/components";
 
 const Login = () => {
   const { push } = useRouter();
-  const [isSubmitLoading, setIsSubmitLoading] = useState<boolean>(false);
-  const [isCredentialsInvalid, setIsCredentialsInvalid] =
-    useState<boolean>(false);
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [shakeUsername, setShakeUsername] = useState<boolean>(false);
-  const [shakePassword, setShakePassword] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [isSubmitLoading, setIsSubmitLoading] = useState(false);
+  const [isCredentialsInvalid, setIsCredentialsInvalid] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [shakeUsername, setShakeUsername] = useState(false);
+  const [shakePassword, setShakePassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const [rememberMe, setRememberMe] = useState(false);
 
   const [loginData, setLoginData] = useState({
     username: "",
@@ -32,7 +34,6 @@ const Login = () => {
     setIsSubmitLoading(true);
     setIsCredentialsInvalid(false);
     setErrorMessage("");
-
     setShakeUsername(false);
     setShakePassword(false);
 
@@ -44,25 +45,18 @@ const Login = () => {
     }
 
     try {
-      const isValid = await authenticateUser(
-        loginData.username,
-        loginData.password
-      );
+      const isValid = await authenticateUser(loginData.username, loginData.password);
 
       if (isValid) {
-        login("dummy-token");
+        login("dummy-token", rememberMe); // usa o checkbox aqui
         push("/dashboard");
       } else {
         setIsCredentialsInvalid(true);
-        setErrorMessage(
-          "Credenciais inválidas. Verifique seu usuário e senha!"
-        );
+        setErrorMessage("Credenciais inválidas. Verifique seu usuário e senha!");
       }
     } catch (error) {
       console.error("Erro no login:", error);
-      setErrorMessage(
-        "Aconteceu um erro ao realizar o login. Tente novamente."
-      );
+      setErrorMessage("Aconteceu um erro ao realizar o login. Tente novamente.");
     } finally {
       setIsSubmitLoading(false);
     }
@@ -90,10 +84,7 @@ const Login = () => {
           </h1>
 
           <form onSubmit={handleSubmit} className="flex flex-col mt-8 relative">
-            <label
-              className="block text-base font-medium mt-8 mb-2"
-              htmlFor="username-input"
-            >
+            <label className="block text-base font-medium mt-8 mb-2" htmlFor="username-input">
               Usuário
             </label>
             <Input
@@ -110,10 +101,7 @@ const Login = () => {
               className={`${shakeUsername && "animate-shake"}`}
             />
 
-            <label
-              className="block text-base font-medium mt-8 mb-2"
-              htmlFor="password-input"
-            >
+            <label className="block text-base font-medium mt-8 mb-2" htmlFor="password-input">
               Senha
             </label>
             <Input
@@ -138,6 +126,20 @@ const Login = () => {
               onClickIcon={() => setShowPassword((prev) => !prev)}
             />
 
+            <div className="flex items-center mt-6 select-none">
+              <input
+                id="remember-me"
+                type="checkbox"
+                checked={rememberMe}
+                onChange={() => setRememberMe((prev) => !prev)}
+                disabled={isSubmitLoading}
+                className="mr-2 cursor-pointer"
+              />
+              <label htmlFor="remember-me" className="text-gray-700 cursor-pointer">
+                Lembrar de mim
+              </label>
+            </div>
+
             {errorMessage && (
               <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2">
                 <X size={16} className="text-red-500 flex-shrink-0" />
@@ -145,22 +147,7 @@ const Login = () => {
               </div>
             )}
 
-            <SubmitButton
-              title="Entrar"
-              className="mt-8"
-              disabled={isSubmitLoading}
-            />
-
-            <div className="mt-6 text-center">
-              <span className="text-gray-600">Não tem uma conta? </span>
-              <button
-                type="button"
-                onClick={() => push("/signup")}
-                className="text-primary-purple hover:text-secondary-purple font-medium transition-colors"
-              >
-                Cadastre-se
-              </button>
-            </div>
+            <SubmitButton title="Entrar" className="mt-8" disabled={isSubmitLoading} />
 
             {isSubmitLoading && (
               <div className="absolute top-1/2 transform -translate-y-1/2 w-full">
@@ -168,6 +155,17 @@ const Login = () => {
               </div>
             )}
           </form>
+
+          <div className="mt-6 text-center">
+            <span className="text-gray-600">Não tem uma conta? </span>
+            <button
+              type="button"
+              onClick={() => push("/signup")}
+              className="text-primary-purple hover:text-secondary-purple font-medium transition-colors"
+            >
+              Cadastre-se
+            </button>
+          </div>
         </div>
       </div>
     </Suspense>

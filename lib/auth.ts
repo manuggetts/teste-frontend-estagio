@@ -58,17 +58,29 @@ export const registerUser = async (
   return true;
 };
 
-export const isAuthenticated = (): boolean => {
-  if (typeof window === "undefined") return false;
-  return !!localStorage.getItem("auth_token");
+// rememberMe para decidir onde salvar o token
+export const login = (token: string, rememberMe: boolean = false): void => {
+  if (typeof window === "undefined") return;
+
+  if (rememberMe) {
+    // persiste após fechar o navegador
+    localStorage.setItem("auth_token", token);
+  } else {
+    // expira quando a aba é fechada
+    sessionStorage.setItem("auth_token", token);
+  }
 };
 
-export const login = (token: string): void => {
-  if (typeof window === "undefined") return;
-  localStorage.setItem("auth_token", token);
+// Verifica se tem token para autenticação
+export const isAuthenticated = (): boolean => {
+  if (typeof window === "undefined") return false;
+
+  return !!(localStorage.getItem("auth_token") || sessionStorage.getItem("auth_token"));
 };
 
 export const logout = (): void => {
   if (typeof window === "undefined") return;
+
   localStorage.removeItem("auth_token");
+  sessionStorage.removeItem("auth_token");
 };
