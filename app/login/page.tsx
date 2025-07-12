@@ -6,7 +6,7 @@ import { Eye, EyeOff, X } from "lucide-react";
 
 import { authenticateUser, isAuthenticated, login } from "@/lib/auth";
 import { Input, SubmitButton, Loader } from "@/components";
-import { useTheme } from "@/hooks/useTheme"; // Hook de tema (adicionado)
+import { useTheme } from "@/hooks/useTheme";
 
 const Login = () => {
   const { push } = useRouter();
@@ -24,7 +24,7 @@ const Login = () => {
     password: "",
   });
 
-  const { theme, toggleTheme } = useTheme(); // Tema escuro/claro
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     if (isAuthenticated()) {
@@ -77,10 +77,19 @@ const Login = () => {
 
   return (
     <Suspense fallback="Carregando...">
-      {/* cor de fundo baseada no tema */}
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 transition-colors">
-        {/* tema escuro no card */}
-        <div className="flex flex-col w-[450px] p-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg transition-colors duration-300">
+        <div className="flex flex-col w-[460px] p-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg transition-colors">
+
+          {/* modo claro/escuro */}
+          <div className="flex justify-end mb-4">
+            <button
+              onClick={toggleTheme}
+              className="px-4 py-2 bg-primary-purple text-white rounded hover:bg-secondary-purple transition"
+            >
+              {theme === "dark" ? "Modo Claro" : "Modo Escuro"}
+            </button>
+          </div>
+
           <h1 className="text-center font-bold text-[28px] md:text-[32px] hover:scale-[1.03] transition-all duration-500 cursor-default text-gray-900 dark:text-white">
             Entrar na{" "}
             <span className="gradient-text from-secondary-purple to-primary-purple">
@@ -88,15 +97,7 @@ const Login = () => {
             </span>
           </h1>
 
-          {/* Botão alternar entre modo claro e escuro */}
-          <button
-            onClick={toggleTheme}
-            className="self-end mt-4 mb-2 px-3 py-1 rounded bg-primary-purple text-white hover:bg-secondary-purple transition"
-          >
-            {theme === "dark" ? "Modo Claro" : "Modo Escuro"}
-          </button>
-
-          <form onSubmit={handleSubmit} className="flex flex-col mt-4 relative">
+          <form onSubmit={handleSubmit} className="flex flex-col mt-8 relative">
             <label className="block text-base font-medium mt-8 mb-2 text-gray-800 dark:text-gray-200" htmlFor="username-input">
               Usuário
             </label>
