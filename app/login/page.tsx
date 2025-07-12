@@ -6,6 +6,7 @@ import { Eye, EyeOff, X } from "lucide-react";
 
 import { authenticateUser, isAuthenticated, login } from "@/lib/auth";
 import { Input, SubmitButton, Loader } from "@/components";
+import { useTheme } from "@/hooks/useTheme"; // Hook de tema (adicionado)
 
 const Login = () => {
   const { push } = useRouter();
@@ -22,6 +23,8 @@ const Login = () => {
     username: "",
     password: "",
   });
+
+  const { theme, toggleTheme } = useTheme(); // Tema escuro/claro
 
   useEffect(() => {
     if (isAuthenticated()) {
@@ -48,7 +51,7 @@ const Login = () => {
       const isValid = await authenticateUser(loginData.username, loginData.password);
 
       if (isValid) {
-        login("dummy-token", rememberMe); // usa o checkbox aqui
+        login("dummy-token", rememberMe);
         push("/dashboard");
       } else {
         setIsCredentialsInvalid(true);
@@ -74,17 +77,27 @@ const Login = () => {
 
   return (
     <Suspense fallback="Carregando...">
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="flex flex-col w-[450px] p-8 bg-white rounded-xl shadow-lg">
-          <h1 className="text-center font-bold text-[28px] md:text-[32px] hover:scale-[1.03] transition-all duration-500 cursor-default">
+      {/* cor de fundo baseada no tema */}
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 transition-colors">
+        {/* tema escuro no card */}
+        <div className="flex flex-col w-[450px] p-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg transition-colors duration-300">
+          <h1 className="text-center font-bold text-[28px] md:text-[32px] hover:scale-[1.03] transition-all duration-500 cursor-default text-gray-900 dark:text-white">
             Entrar na{" "}
             <span className="gradient-text from-secondary-purple to-primary-purple">
               Capivara AI
             </span>
           </h1>
 
-          <form onSubmit={handleSubmit} className="flex flex-col mt-8 relative">
-            <label className="block text-base font-medium mt-8 mb-2" htmlFor="username-input">
+          {/* Botão alternar entre modo claro e escuro */}
+          <button
+            onClick={toggleTheme}
+            className="self-end mt-4 mb-2 px-3 py-1 rounded bg-primary-purple text-white hover:bg-secondary-purple transition"
+          >
+            {theme === "dark" ? "Modo Claro" : "Modo Escuro"}
+          </button>
+
+          <form onSubmit={handleSubmit} className="flex flex-col mt-4 relative">
+            <label className="block text-base font-medium mt-8 mb-2 text-gray-800 dark:text-gray-200" htmlFor="username-input">
               Usuário
             </label>
             <Input
@@ -101,7 +114,7 @@ const Login = () => {
               className={`${shakeUsername && "animate-shake"}`}
             />
 
-            <label className="block text-base font-medium mt-8 mb-2" htmlFor="password-input">
+            <label className="block text-base font-medium mt-8 mb-2 text-gray-800 dark:text-gray-200" htmlFor="password-input">
               Senha
             </label>
             <Input
@@ -135,15 +148,15 @@ const Login = () => {
                 disabled={isSubmitLoading}
                 className="mr-2 cursor-pointer"
               />
-              <label htmlFor="remember-me" className="text-gray-700 cursor-pointer">
+              <label htmlFor="remember-me" className="text-gray-700 dark:text-gray-300 cursor-pointer">
                 Lembrar de mim
               </label>
             </div>
 
             {errorMessage && (
-              <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2">
+              <div className="mt-4 p-3 bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-800 rounded-lg flex items-center gap-2">
                 <X size={16} className="text-red-500 flex-shrink-0" />
-                <span className="text-red-700 text-sm">{errorMessage}</span>
+                <span className="text-red-700 dark:text-red-200 text-sm">{errorMessage}</span>
               </div>
             )}
 
@@ -157,7 +170,7 @@ const Login = () => {
           </form>
 
           <div className="mt-6 text-center">
-            <span className="text-gray-600">Não tem uma conta? </span>
+            <span className="text-gray-600 dark:text-gray-300">Não tem uma conta? </span>
             <button
               type="button"
               onClick={() => push("/signup")}

@@ -9,6 +9,7 @@ import * as Tooltip from "@radix-ui/react-tooltip";
 import { Input, SubmitButton, Loader } from "@/components";
 import { registerUser } from "@/lib/auth";
 import { ToastProvider, useToast } from "@/components/ToastExample";
+import { useTheme } from "@/hooks/useTheme";
 
 const InputWithTooltip = ({
   id,
@@ -29,7 +30,7 @@ const InputWithTooltip = ({
     <label
       htmlFor={id}
       className={`block text-base font-medium mb-2 cursor-default ${
-        error ? "text-red-600" : "text-gray-900"
+        error ? "text-red-600" : "text-gray-900 dark:text-gray-100"
       }`}
     >
       {label}
@@ -62,6 +63,7 @@ const InputWithTooltip = ({
 const SignupForm = () => {
   const { push } = useRouter();
   const { addToast } = useToast();
+  const { theme, toggleTheme } = useTheme();
 
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -180,9 +182,19 @@ const SignupForm = () => {
   const widths = ["w-1/5", "w-1/5", "w-2/5", "w-4/5", "w-full"];
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="flex flex-col w-[460px] p-8 bg-white rounded-xl shadow-lg">
-        <h1 className="text-center font-bold text-[28px] md:text-[32px] hover:scale-[1.03] transition-all duration-500 cursor-default">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 transition-colors">
+      <div className="flex flex-col w-[460px] p-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg transition-colors">
+        
+        <div className="flex justify-end mb-4">
+          <button
+            onClick={toggleTheme}
+            className="px-4 py-2 bg-primary-purple text-white rounded hover:bg-secondary-purple transition"
+          >
+            {theme === "dark" ? "Modo Claro" : "Modo Escuro"}
+          </button>
+        </div>
+        
+        <h1 className="text-center font-bold text-[28px] md:text-[32px] hover:scale-[1.03] transition-all duration-500 cursor-default text-gray-900 dark:text-gray-100">
           Cadastrar na{" "}
           <span className="gradient-text from-secondary-purple to-primary-purple">
             Capivara AI
@@ -254,7 +266,7 @@ const SignupForm = () => {
                     className={`${colors[score]} ${widths[score]} h-2 rounded transition-all duration-500`}
                   ></div>
                 </div>
-                <p className="text-sm text-gray-600 mt-1">{feedback}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">{feedback}</p>
               </>
             )}
 
